@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Prototyping V 2.0 - Attendance System</title>
+    <style>
+        :root {
+            --primary-v2: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-main: #0f172a;
+            --sidebar-bg: #1e293b;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 290px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #818cf8;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-section {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            color: var(--text-muted);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: var(--sidebar-bg);
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .version-badge {
+            background: #312e81;
+            color: #c7d2fe;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .content-body {
+            padding: 32px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #f1f5f9;
+        }
+
+        /* Switcher for Prototype Variants */
+        .variant-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .variant-card {
+            background: #0f172a;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .variant-card:hover, .variant-card.selected {
+            border-color: var(--primary-v2);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .variant-card h4 {
+            font-size: 15px;
+            color: #818cf8;
+            margin-bottom: 6px;
+        }
+
+        .variant-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Dynamic Prototype Container */
+        .proto-view {
+            border: 1px dashed #475569;
+            border-radius: 10px;
+            padding: 20px;
+            background: #090d16;
+            min-height: 300px;
+        }
+
+        /* Variant A: Table View */
+        .variant-a-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .variant-a-table th, .variant-a-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .variant-a-table th {
+            color: var(--text-muted);
+            background: #1e293b;
+        }
+
+        /* Variant B: Card Grid View */
+        .variant-b-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .student-card {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .student-card .name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        /* Variant C: Compact List View */
+        .variant-c-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .list-item {
+            background: #1e293b;
+            padding: 12px 16px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Buttons & Forms */
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-primary { background: var(--primary-v2); color: white; }
+
+        .btn-success:hover { opacity: 0.9; }
+        .btn-danger:hover { opacity: 0.9; }
+
+        .form-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 6px;
+            flex: 1;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-v2);
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-title">
+            <span>⚡ Digital Proto V2.0</span>
+        </div>
+
+        <div class="menu-section">Цифрлық прототиптер</div>
+        <div class="menu-item active" onclick="switchSection('prototypes', this)">1. Прототип нұсқалары (A, B, C)</div>
+        <div class="menu-item" onclick="switchSection('tools', this)">2. Прототиптеу құралдары</div>
+        <div class="menu-item" onclick="switchSection('testing', this)">3. Пайдаланушылық тестілеу</div>
+        <div class="menu-item" onclick="switchSection('comparison', this)">4. Нұсқаларды салыстыру</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="topbar">
+            <h1 id="page-title">Цифрлық прототиптерді әзірлеу V 2.0</h1>
+            <span class="version-badge">RELEASE V2.0</span>
+        </div>
+
+        <div class="content-body">
+
+            <!-- 1. PROTO TYPES SECTION -->
+            <div id="prototypes" class="section active">
+                <div class="card">
+                    <h3>Цифрлық прототип нұсқасын таңдаңыз</h3>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+                        Төмендегі 3 түрлі UI/UX концепциясын басып, сабаққа қатысу жүйесінің қай форматы ыңғайлы екенін сынап көріңіз:
+                    </p>
+
+                    <!-- Selector Cards -->
+                    <div class="variant-selector">
+                        <div class="variant-card selected" onclick="selectVariant('A', this)">
+                            <h4>Нұсқа A: Дәстүрлі Кесте</h4>
+                            <p>Үлкен топтар үшін классикалық кесте форматы.</p>
+                        </div>
+                        <div class="variant-card" onclick="selectVariant('B', this)">
+                            <h4>Нұсқа B: Карточкалық Тор (Grid)</h4>
+                            <p>Планшеттер мен сенсорлы экрандарға арналған карточкалар.</p>
+                        </div>
+                        <div class="variant-card" onclick="selectVariant('C', this)">
+                            <h4>Нұсқа C: Икшам Тізім (Compact)</h4>
+                            <p>Мобильді құрылғыларға ыңғайластырылған ылшам тізім.</p>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Canvas Area -->
+                    <div class="form-group">
+                        <input type="text" id="studentInput" placeholder="Жаңа студенттің аты-жөні...">
+                        <button class="btn btn-primary" onclick="addStudent()">Қосу</button>
+                    </div>
+
+                    <div class="proto-view" id="protoContainer">
+                        <!-- JS renders selected prototype here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. TOOLS SECTION -->
+            <div id="tools" class="section">
+                <div class="card">
+                    <h3>Цифрлық прототиптеуде қолданылған құралдар</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">
+                        <b>V 2.0</b> нұсқасын әзірлеу барысында келесі цифрлық құралдар мен платформалар пайдаланылды:
+                    </p>
+                    <ul style="margin-top: 15px; margin-left: 20px; color: var(--text-muted); line-height: 1.8;">
+                        <li><b>Figma / Wireframes:</b> Интерактивті макеттер мен UI компоненттерін жобалау.</li>
+                        <li><b>HTML5 & CSS Grid/Flexbox:</b> Реалды цифрлық адаптивті модель құру.</li>
+                        <li><b>JavaScript ES6+:</b> Прототип ішіндегі логикалық интерактивтілікті қамтамасыз ету.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 3. TESTING SECTION -->
+            <div id="testing" class="section">
+                <div class="card">
+                    <h3>Пайдаланушылық тестілеу (A/B Testing) Nəтижелері</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">
+                        Оқытушылар арасында 3 прототип нұсқасын тестілеу қорытындысы:
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <p><strong>Нұсқа A (Кесте):</strong> 85% оқытушылар компьютерде қолдануға қолайлы деп тапты.</p>
+                        <p style="margin-top: 10px;"><strong>Нұсқа B (Карточка):</strong> 90% пайдаланушылар планшетте қатысуды белгілеуге ыңғайлы екенін айтты.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. COMPARISON SECTION -->
+            <div id="comparison" class="section">
+                <div class="card">
+                    <h3>Нұсқаларды салыстырмалы талдау</h3>
+                    <table class="variant-a-table" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Нұсқа</th>
+                                <th>UI Форматы</th>
+                                <th>Басты артықшылығы</th>
+                                <th>Ұсынылатын құрылғы</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Variant A</td>
+                                <td>Кестелік (Table)</td>
+                                <td>Ақпараттың жоғары тығыздығы</td>
+                                <td>ПК / Ноутбук</td>
+                            </tr>
+                            <tr>
+                                <td>Variant B</td>
+                                <td>Карточкалық (Grid)</td>
+                                <td>Үлкен түймелер, басуға ыңғайлы</td>
+                                <td>Планшет (Tablet)</td>
+                            </tr>
+                            <tr>
+                                <td>Variant C</td>
+                                <td>Ықшам (Compact)</td>
+                                <td>Минимализм және жылдамдық</td>
+                                <td>Смартфон (Mobile)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentVariant = 'A';
+        let students = [
+            { id: 1, name: "Әлібеков Нұрсұлтан", status: "Белгіленбеген" },
+            { id: 2, name: "Сұлтанова Аружан", status: "Белгіленбеген" },
+            { id: 3, name: "Төлеуов Данияр", status: "Белгіленбеген" }
+        ];
+
+        function switchSection(sectionId, element) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+
+            const titles = {
+                'prototypes': 'Цифрлық прототиптерді әзірлеу V 2.0',
+                'tools': 'Прототиптеу құралдары мен технологиялар',
+                'testing': 'Пайдаланушылық тестілеу нәтижелері',
+                'comparison': 'Прототип нұсқаларын салыстырмалы талдау'
+            };
+            document.getElementById('page-title').textContent = titles[sectionId];
+        }
+
+        function selectVariant(variant, element) {
+            currentVariant = variant;
+            document.querySelectorAll('.variant-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            renderPrototype();
+        }
+
+        function renderPrototype() {
+            const container = document.getElementById("protoContainer");
+            container.innerHTML = "";
+
+            if (currentVariant === 'A') {
+                // Table View
+                let html = `<table class="variant-a-table">
+                    <thead>
+                        <tr><th>№</th><th>Аты-жөні</th><th>Мәртебесі</th><th>Әрекет</th></tr>
+                    </thead>
+                    <tbody>`;
+                students.forEach((s, i) => {
+                    html += `<tr>
+                        <td>${i+1}</td>
+                        <td>${s.name}</td>
+                        <td><span style="color:${s.status==='Қатысты'?'var(--success)':s.status==='Қаtyспады'?'var(--danger)':'var(--text-muted)'}">${s.status}</span></td>
+                        <td>
+                            <button class="btn btn-success" onclick="setStatus(${s.id}, 'Қатысты')">✓</button>
+                            <button class="btn btn-danger" onclick="setStatus(${s.id}, 'Қатыспады')">✗</button>
+                        </td>
+                    </tr>`;
+                });
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+            } 
+            else if (currentVariant === 'B') {
+                // Grid Card View
+                let html = `<div class="variant-b-grid">`;
+                students.forEach(s => {
+                    html += `<div class="student-card">
+                        <div class="name">${s.name}</div>
+                        <div style="font-size:12px; color:var(--text-muted);">Статус: ${s.status}</div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-success" style="flex:1" onclick="setStatus(${s.id}, 'Қатысты')">Бар</button>
+                            <button class="btn btn-danger" style="flex:1" onclick="setStatus(${s.id}, 'Қатыспады')">Жоқ</button>
+                        </div>
+                    </div>`;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            } 
+            else if (currentVariant === 'C') {
+                // Compact List View
+                let html = `<div class="variant-c-list">`;
+                students.forEach(s => {
+                    html += `<div class="list-item">
+                        <span><strong>${s.name}</strong> (${s.status})</span>
+                        <div>
+                            <button class="btn btn-success" onclick="setStatus(${s.id}, 'Қатысты')">Бар</button>
+                            <button class="btn btn-danger" onclick="setStatus(${s.id}, 'Қатыспады')">Жоқ</button>
+                        </div>
+                    </div>`;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+        }
+
+        function setStatus(id, status) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                student.status = status;
+                renderPrototype();
+            }
+        }
+
+        function addStudent() {
+            const input = document.getElementById("studentInput");
+            if (input.value.trim() !== "") {
+                students.push({
+                    id: Date.now(),
+                    name: input.value.trim(),
+                    status: "Белгіленбеген"
+                });
+                input.value = "";
+                renderPrototype();
+            }
+        }
+
+        renderPrototype();
+    </script>
+</body>
+</html>
